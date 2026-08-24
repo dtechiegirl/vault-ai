@@ -10,7 +10,8 @@ This repository contains Team Accelerators' work for Project 1 of the TAG AI Eng
 - SOULEY Raquib
 - Tomoloju Temilolaoluwa
 - Iyamokuma inatimi
-- To be confirmed
+- Aishat Adebanjo
+- Monday Imeobong
 
 ## Project Brief
 
