@@ -20,6 +20,7 @@ import {
   previewAnswer,
   previewStudio,
   SAMPLE_DOCUMENTS,
+  SAMPLE_THREAD,
 } from '../data/sampleWorkspace'
 import type {
   ChatMessage,
@@ -53,8 +54,8 @@ const VaultContext = createContext<VaultContextValue | null>(null)
 
 const ACTION_TITLES: Record<StudioAction, string> = {
   summary: 'Executive summary',
-  entities: 'Key entities & dates',
-  faq: 'Auto-generated FAQ',
+  entities: 'Keywords',
+  faq: 'Auto FAQ',
 }
 
 function liveIds(documents: VaultDocument[]): string[] {
@@ -62,12 +63,12 @@ function liveIds(documents: VaultDocument[]): string[] {
 }
 
 export function VaultProvider({ children }: { children: ReactNode }) {
-  const [documents, setDocuments] = useState<VaultDocument[]>([])
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [documents, setDocuments] = useState<VaultDocument[]>(SAMPLE_DOCUMENTS)
+  const [messages, setMessages] = useState<ChatMessage[]>(SAMPLE_THREAD)
   const [studioResult, setStudioResult] = useState<StudioResult | null>(null)
   const [studioLoading, setStudioLoading] = useState(false)
   const [connection, setConnection] = useState<ConnectionState>('checking')
-  const [previewMode, setPreviewMode] = useState(false)
+  const [previewMode, setPreviewMode] = useState(true)
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('chat')
 
   useEffect(() => {
@@ -82,6 +83,8 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         const remote = await listDocuments()
         if (!cancelled && remote.length) {
           setDocuments(remote)
+          setPreviewMode(false)
+          setMessages([])
         }
       } catch {
         return
@@ -123,8 +126,9 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         const kind = fileKindFromName(file.name) ?? 'txt'
         const localId = uid()
         setPreviewMode(false)
+        setMessages((current) => (previewMode ? [] : current))
         setDocuments((current) => [
-          ...current,
+          ...(previewMode ? [] : current),
           {
             id: localId,
             filename: file.name,
@@ -167,7 +171,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         }
       }
     },
-    [connection],
+    [connection, previewMode],
   )
 
   const removeDocument = useCallback(
@@ -331,7 +335,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const loadPreview = useCallback(() => {
     setPreviewMode(true)
     setDocuments(SAMPLE_DOCUMENTS)
-    setMessages([])
+    setMessages(SAMPLE_THREAD)
     setStudioResult(null)
     setMobilePanel('chat')
   }, [])

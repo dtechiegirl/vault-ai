@@ -15,6 +15,15 @@ export function DropZone() {
   return (
     <div
       className={active ? 'dropzone is-active' : 'dropzone'}
+      role="button"
+      tabIndex={0}
+      onClick={() => inputRef.current?.click()}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          inputRef.current?.click()
+        }
+      }}
       onDragEnter={(event) => {
         event.preventDefault()
         setActive(true)
@@ -36,19 +45,14 @@ export function DropZone() {
         type="file"
         accept=".pdf,.pptx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain"
         multiple
+        onClick={(event) => event.stopPropagation()}
         onChange={(event) => {
           handleFiles(event.target.files)
           event.currentTarget.value = ''
         }}
       />
       <IconUpload />
-      <p>
-        <button type="button" className="text-link" onClick={() => inputRef.current?.click()}>
-          Choose files
-        </button>{' '}
-        or drop PDF, PPTX, TXT
-      </p>
-      <span>Parsed and indexed locally. Scanned images are not supported.</span>
+      <p>Drop your PDFs here</p>
     </div>
   )
 }

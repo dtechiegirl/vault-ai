@@ -9,13 +9,18 @@ export default function App() {
   return (
     <VaultProvider>
       <div className="app-shell">
-        <AppHeader />
-        <main className="workspace">
-          <SourcesPanel />
-          <ChatPanel />
-          <StudioPanel />
-        </main>
-        <MobileNav />
+        <div className="app-card">
+          <AppHeader />
+          <main className="workspace">
+            <SourcesPanel />
+            <ChatPanel />
+            <StudioPanel />
+          </main>
+          <MobileNav />
+        </div>
+        <p className="app-footer">
+          Vault AI — Private document Q&A assistant, running fully local via Ollama
+        </p>
       </div>
     </VaultProvider>
   )

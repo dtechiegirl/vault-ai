@@ -1,4 +1,4 @@
-import type { ChatPayload, Citation, StudioAction, StudioPayload, VaultDocument } from '../types'
+import type { ChatMessage, ChatPayload, Citation, StudioAction, StudioPayload, VaultDocument } from '../types'
 
 type SampleChunk = {
   source: string
@@ -8,66 +8,75 @@ type SampleChunk = {
 
 export const SAMPLE_DOCUMENTS: VaultDocument[] = [
   {
-    id: 'sample-msa',
-    filename: 'Master-Services-Agreement.pdf',
+    id: 'sample-hr',
+    filename: 'HR_Policy.pdf',
     fileType: 'pdf',
     status: 'indexed',
-    sizeBytes: 248320,
     createdAt: '2026-08-12T09:14:00.000Z',
   },
   {
-    id: 'sample-gdpr',
-    filename: 'GDPR-Internal-Guidelines.pptx',
-    fileType: 'pptx',
+    id: 'sample-contract',
+    filename: 'Standard_Contract.pdf',
+    fileType: 'pdf',
     status: 'indexed',
-    sizeBytes: 1102848,
     createdAt: '2026-08-18T16:40:00.000Z',
   },
   {
-    id: 'sample-audit',
-    filename: 'Q3-Financial-Audit-Memo.txt',
-    fileType: 'txt',
+    id: 'sample-manual',
+    filename: 'Product_Manual.pdf',
+    fileType: 'pdf',
     status: 'indexed',
-    sizeBytes: 18432,
     createdAt: '2026-08-21T11:02:00.000Z',
+  },
+]
+
+export const SAMPLE_THREAD: ChatMessage[] = [
+  {
+    id: 'sample-answer',
+    role: 'assistant',
+    content: 'The notice period is 30 calendar days.',
+    citations: [
+      {
+        source: 'Standard_Contract.pdf',
+        page: 3,
+        snippet:
+          'Either party may terminate this Agreement by providing thirty (30) calendar days written notice.',
+      },
+    ],
+    createdAt: '2026-08-28T09:00:00.000Z',
   },
 ]
 
 const CHUNKS: SampleChunk[] = [
   {
-    source: 'Master-Services-Agreement.pdf',
+    source: 'Standard_Contract.pdf',
     page: 1,
-    text: 'This Master Services Agreement is entered into as of 14 March 2026 between Northbridge Legal LLP (“Client”) and Helios Advisory Ltd (“Provider”). The Agreement governs confidential consulting and document review services performed solely on Client premises.',
+    text: 'This Standard Contract is entered into as of 14 March 2026 between Northbridge Legal LLP (“Client”) and Helios Advisory Ltd (“Provider”).',
   },
   {
-    source: 'Master-Services-Agreement.pdf',
+    source: 'Standard_Contract.pdf',
     page: 3,
-    text: 'Either party may terminate this Agreement by providing thirty (30) days written notice. Immediate termination is permitted for material breach that remains uncured for ten (10) days after written notice, or for any unauthorized transfer of Client data off the local workstation.',
+    text: 'Either party may terminate this Agreement by providing thirty (30) calendar days written notice. Immediate termination is permitted for material breach that remains uncured for ten (10) days after written notice.',
   },
   {
-    source: 'Master-Services-Agreement.pdf',
+    source: 'Standard_Contract.pdf',
     page: 7,
-    text: 'Provider shall not transmit, copy, or store Client documents on third-party cloud systems. All processing must remain on encrypted local devices. Liability for a data-residency breach is capped at twelve (12) months of fees, currently GBP 180,000.',
+    text: 'Provider shall not transmit Client documents to third-party cloud systems. All processing must remain on encrypted local devices. Liability for a data-residency breach is capped at twelve (12) months of fees, currently GBP 180,000.',
   },
   {
-    source: 'GDPR-Internal-Guidelines.pptx',
+    source: 'HR_Policy.pdf',
     page: 2,
-    text: 'Personal data of EU data subjects must not leave the local processing environment. Lawful bases used by the firm are contractual necessity and legitimate interests. Transfers to OpenAI, Anthropic, or Google APIs are prohibited without a documented DPIA and SCCs.',
+    text: 'Personal data of employees must not leave the local processing environment. Transfers to OpenAI, Anthropic, or Google APIs are prohibited without a documented DPIA.',
   },
   {
-    source: 'GDPR-Internal-Guidelines.pptx',
+    source: 'HR_Policy.pdf',
     page: 5,
-    text: 'Retention: executed contracts are retained for 7 years after termination. Interview notes are deleted after 24 months. A data subject access request must be completed within 30 days. The Data Protection Officer is Amara Okonkwo (dpo@northbridge.example).',
+    text: 'Executed contracts are retained for 7 years after termination. A data subject access request must be completed within 30 days. The Data Protection Officer is Amara Okonkwo.',
   },
   {
-    source: 'Q3-Financial-Audit-Memo.txt',
-    page: 1,
-    text: 'Q3 2026 internal audit of the London compliance practice. Finding F-04: two analysts pasted clause extracts into a public chatbot on 3 July 2026. Remediation: mandate Vault AI (local Ollama) for all contract interrogation by 15 September 2026. Residual risk: Medium.',
-  },
-  {
-    source: 'Q3-Financial-Audit-Memo.txt',
-    page: 1,
-    text: 'Control testing sampled 40 matters. Exception rate on NDA handling fell from 11% in Q2 to 4% in Q3 after local indexing was introduced. Recommended action: complete source citations on every generated answer before partner review.',
+    source: 'Product_Manual.pdf',
+    page: 4,
+    text: 'Vault AI indexes PDF, PPTX, and TXT files locally. Answers must include source citations before partner review. Public chatbots are not an approved tool for contract interrogation.',
   },
 ]
 
@@ -140,6 +149,16 @@ function toCitations(chunks: SampleChunk[]): Citation[] {
 }
 
 export function previewAnswer(query: string): ChatPayload {
+  const noticeChunk = CHUNKS.find(
+    (chunk) => chunk.source === 'Standard_Contract.pdf' && chunk.page === 3,
+  )
+  if (/notice period/i.test(query) && noticeChunk) {
+    return {
+      answer: 'The notice period is 30 calendar days.',
+      citations: toCitations([noticeChunk]),
+    }
+  }
+
   const ranked = rankChunks(query)
   if (!ranked.length || ranked[0].score < 2) {
     return {
@@ -149,13 +168,16 @@ export function previewAnswer(query: string): ChatPayload {
   }
 
   const top = ranked.slice(0, 3)
-  const lines = top.map(
-    (chunk) =>
-      `- ${chunk.text} _(Source: ${chunk.source}, p. ${chunk.page})_`,
-  )
+  const best = top[0]
+  if (!best) {
+    return {
+      answer: 'Not found in provided documents',
+      citations: [],
+    }
+  }
 
   return {
-    answer: `Based strictly on the indexed sources:\n\n${lines.join('\n\n')}`,
+    answer: best.text,
     citations: toCitations(top),
   }
 }
@@ -164,62 +186,46 @@ export function previewStudio(action: StudioAction): StudioPayload {
   if (action === 'summary') {
     return {
       content: [
-        '- Northbridge Legal LLP engaged Helios Advisory Ltd under an MSA dated 14 March 2026 for on-premises confidential review.',
-        '- Termination requires 30 days’ written notice, or 10 days after an uncured material breach, including any off-device data transfer.',
-        '- Client documents must stay on encrypted local workstations; cloud LLM APIs are prohibited without a DPIA.',
-        '- Q3 audit finding F-04 recorded public-chatbot leakage on 3 July 2026; remediation is local Vault AI use by 15 September 2026.',
-        '- NDA exception rate improved from 11% in Q2 to 4% in Q3; residual risk remains Medium pending citation discipline.',
+        '- Standard_Contract.pdf sets a 30 calendar day notice period and forbids off-device cloud transfer.',
+        '- HR_Policy.pdf keeps employee data local and names Amara Okonkwo as DPO.',
+        '- Product_Manual.pdf requires source citations on every generated answer.',
+        '- Cloud LLM APIs are not an approved processing path.',
+        '- Liability for a data-residency breach is capped at GBP 180,000.',
       ].join('\n'),
-      citations: toCitations([CHUNKS[0], CHUNKS[2], CHUNKS[5]]),
+      citations: toCitations([CHUNKS[1], CHUNKS[3], CHUNKS[5]]),
     }
   }
 
   if (action === 'entities') {
     return {
       content: [
-        '### Parties',
-        '- Northbridge Legal LLP (Client)',
-        '- Helios Advisory Ltd (Provider)',
-        '- Amara Okonkwo — Data Protection Officer',
-        '',
-        '### Dates',
-        '- 14 March 2026 — MSA effective date',
-        '- 3 July 2026 — chatbot leakage incident',
-        '- 15 September 2026 — mandated local-tool remediation deadline',
-        '',
-        '### Figures & periods',
-        '- 30 days termination notice; 10 days cure period',
-        '- Liability cap: GBP 180,000 (12 months of fees)',
-        '- Contract retention: 7 years; interview notes: 24 months; DSAR: 30 days',
+        '- Northbridge Legal LLP',
+        '- Helios Advisory Ltd',
+        '- Amara Okonkwo',
+        '- 14 March 2026',
+        '- 30 calendar days',
+        '- GBP 180,000',
       ].join('\n'),
-      citations: toCitations([CHUNKS[0], CHUNKS[1], CHUNKS[4], CHUNKS[5]]),
+      citations: toCitations([CHUNKS[0], CHUNKS[1], CHUNKS[4]]),
     }
   }
 
   return {
     content: [
-      '**Q. What notice is required to terminate the MSA?**',
-      'A. Thirty (30) days’ written notice, or ten (10) days after an uncured material breach. *(Master-Services-Agreement.pdf, p. 3)*',
+      '**Q. What is the notice period?**',
+      'A. 30 calendar days.',
       '',
-      '**Q. May analysts use cloud LLM APIs on client files?**',
-      'A. No. Transfers to OpenAI, Anthropic, or Google APIs are prohibited without a DPIA and SCCs, and the MSA forbids third-party cloud storage. *(GDPR-Internal-Guidelines.pptx, p. 2; Master-Services-Agreement.pdf, p. 7)*',
+      '**Q. May we send contracts to a cloud LLM?**',
+      'A. No.',
       '',
       '**Q. Who is the Data Protection Officer?**',
-      'A. Amara Okonkwo, dpo@northbridge.example. *(GDPR-Internal-Guidelines.pptx, p. 5)*',
-      '',
-      '**Q. What was audit finding F-04?**',
-      'A. Two analysts pasted clause extracts into a public chatbot on 3 July 2026. *(Q3-Financial-Audit-Memo.txt, p. 1)*',
-      '',
-      '**Q. What is the liability cap for a data-residency breach?**',
-      'A. Twelve months of fees, currently GBP 180,000. *(Master-Services-Agreement.pdf, p. 7)*',
+      'A. Amara Okonkwo.',
     ].join('\n'),
-    citations: toCitations([CHUNKS[1], CHUNKS[2], CHUNKS[3], CHUNKS[4], CHUNKS[5]]),
+    citations: toCitations([CHUNKS[1], CHUNKS[3], CHUNKS[4]]),
   }
 }
 
 export const PREVIEW_PROMPTS = [
-  'What is the termination notice period?',
-  'Who are the parties to the MSA?',
+  'What is the notice period?',
   'May we send contracts to a cloud LLM?',
-  'What is audit finding F-04?',
 ]
