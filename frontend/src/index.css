@@ -15,7 +15,7 @@
   --danger: #b42318;
   --radius-card: 22px;
   --radius: 10px;
-  --font: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Geneva, Verdana, sans-serif;
   --shadow: 0 10px 30px rgba(27, 54, 93, 0.06);
 }
 
@@ -113,7 +113,6 @@ h3 {
   font-size: 1.28rem;
   font-weight: 700;
   color: var(--navy);
-  letter-spacing: -0.02em;
 }
 
 .offline-pill {
