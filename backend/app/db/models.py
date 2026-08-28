@@ -26,6 +26,11 @@ class Document(Base):
         nullable=False,
     )
 
+    storage_path: Mapped[str] = mapped_column(
+        String(500),
+        nullable=False,
+    )
+
     status: Mapped[str] = mapped_column(
         String(20),
         nullable=False,

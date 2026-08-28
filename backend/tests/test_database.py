@@ -37,6 +37,7 @@ def test_document_can_be_created():
     document = Document(
         filename="test.pdf",
         file_type="pdf",
+        storage_path="data/uploads/test-document.pdf",
     )
 
     session.add(document)

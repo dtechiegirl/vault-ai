@@ -35,3 +35,6 @@ chroma_db/
 *.db
 *.sqlite
 *.sqlite3
+
+data/uploads/*
+!data/uploads/.gitkeep
