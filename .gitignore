@@ -30,3 +30,8 @@ chroma_db/
 
 # Logs
 *.log
+
+# Local SQLite database
+*.db
+*.sqlite
+*.sqlite3
