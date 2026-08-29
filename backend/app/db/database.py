@@ -1,3 +1,5 @@
+from collections.abc import Generator
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -26,3 +28,11 @@ def init_db() -> None:
     from backend.app.db import models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+
+def get_db() -> Generator:
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
