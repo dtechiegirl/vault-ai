@@ -79,22 +79,26 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       if (cancelled) return
       setConnection(healthy ? 'online' : 'offline')
       if (!healthy) return
+      setPreviewMode(false)
       try {
         const remote = await listDocuments()
-        if (!cancelled && remote.length) {
-          setDocuments(remote)
-          setPreviewMode(false)
+        if (cancelled) return
+        setDocuments(remote)
+        setMessages([])
+      } catch {
+        if (!cancelled) {
+          setDocuments([])
           setMessages([])
         }
-      } catch {
-        return
       }
     }
 
     void boot()
     const timer = window.setInterval(async () => {
       const healthy = await checkHealth()
-      if (!cancelled) setConnection(healthy ? 'online' : 'offline')
+      if (cancelled) return
+      setConnection(healthy ? 'online' : 'offline')
+      if (healthy) setPreviewMode(false)
     }, 15000)
 
     return () => {
@@ -229,7 +233,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      if (!previewMode && connection !== 'online') {
+      if (connection !== 'online' && !previewMode) {
         setMessages((current) =>
           current.map((message) =>
             message.id === pendingId
@@ -247,9 +251,10 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       }
 
       try {
-        const result = previewMode
-          ? previewAnswer(trimmed)
-          : await askQuestion(trimmed, liveIds(documents))
+        const result =
+          connection === 'online'
+            ? await askQuestion(trimmed, liveIds(documents))
+            : previewAnswer(trimmed)
 
           setMessages((current) =>
             current.map((message) =>
@@ -295,7 +300,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      if (!previewMode && connection !== 'online') {
+      if (connection !== 'online' && !previewMode) {
         setStudioResult({
           action,
           title: ACTION_TITLES[action],
@@ -308,9 +313,10 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       setStudioLoading(true)
       setStudioResult(null)
       try {
-        const payload = previewMode
-          ? previewStudio(action)
-          : await runStudioAction(action, liveIds(documents))
+        const payload =
+          connection === 'online'
+            ? await runStudioAction(action, liveIds(documents))
+            : previewStudio(action)
 
         setStudioResult({
           action,

@@ -20,12 +20,12 @@ Optional: set `VITE_API_BASE` if the backend is not reached through the Vite pro
 - `POST /documents/upload`
 - `GET /documents`
 - `DELETE /documents/{id}`
-- `POST /chat`
+- `POST /chat` with `{ "query": "...", "document_ids": ["..."] }` returning `{ "answer": "...", "citations": [{ "source": "...", "page": 3, "snippet": "..." }] }`
 - `POST /summary`
-- `POST /entities` (fallback `/extract`)
+- `POST /entities`
 - `POST /faq`
 
-If the API is idle, use **Load sample workspace** to preview citations, anti-hallucination replies, and studio output without sending files off the machine.
+If the API is idle, **Load sample documents** previews citations and studio output locally. When FastAPI is reachable, chat and studio always call the live endpoints.
 
 ## Build
 

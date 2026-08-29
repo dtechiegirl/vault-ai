@@ -19,18 +19,19 @@ type DocumentResponse = {
 }
 
 type ChatResponse = {
-  answer?: string
-  content?: string
-  citations?: Citation[]
-  sources?: Citation[]
+  answer: string
+  citations: Citation[]
 }
 
 type StudioResponse = {
-  content?: string
-  summary?: string
-  bullets?: string[]
-  markdown?: string
+  content: string
   citations?: Citation[]
+}
+
+const STUDIO_PATHS: Record<StudioAction, string> = {
+  summary: '/summary',
+  entities: '/entities',
+  faq: '/faq',
 }
 
 function asFileKind(value: string): FileKind {
@@ -102,9 +103,8 @@ export async function listDocuments(): Promise<VaultDocument[]> {
   if (!response.ok) {
     throw new Error(await parseError(response))
   }
-  const payload = (await response.json()) as DocumentResponse[] | { documents?: DocumentResponse[] }
-  const records = Array.isArray(payload) ? payload : (payload.documents ?? [])
-  return records.map(mapDocument)
+  const payload = (await response.json()) as DocumentResponse[]
+  return payload.map(mapDocument)
 }
 
 export async function deleteDocument(id: string): Promise<void> {
@@ -123,7 +123,6 @@ export async function askQuestion(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       query,
-      question: query,
       document_ids: documentIds,
     }),
   })
@@ -133,61 +132,39 @@ export async function askQuestion(
   }
 
   const payload = (await response.json()) as ChatResponse
-  return {
-    answer: payload.answer ?? payload.content ?? '',
-    citations: payload.citations ?? payload.sources ?? [],
+  if (typeof payload.answer !== 'string' || !Array.isArray(payload.citations)) {
+    throw new Error('Unexpected /chat response shape.')
   }
-}
 
-const STUDIO_PATHS: Record<StudioAction, string[]> = {
-  summary: ['/summary', '/studio/summary'],
-  entities: ['/entities', '/extract', '/studio/entities'],
-  faq: ['/faq', '/studio/faq'],
+  return {
+    answer: payload.answer,
+    citations: payload.citations,
+  }
 }
 
 export async function runStudioAction(
   action: StudioAction,
   documentIds: string[],
 ): Promise<StudioPayload> {
-  const body = JSON.stringify({
-    document_ids: documentIds,
-    action,
+  const response = await fetch(`${API_BASE}${STUDIO_PATHS[action]}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      document_ids: documentIds,
+    }),
   })
 
-  let lastError = 'Studio action failed'
-
-  for (const path of STUDIO_PATHS[action]) {
-    try {
-      const response = await fetch(`${API_BASE}${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body,
-      })
-
-      if (response.status === 404) {
-        continue
-      }
-
-      if (!response.ok) {
-        lastError = await parseError(response)
-        continue
-      }
-
-      const payload = (await response.json()) as StudioResponse
-      const fromBullets = payload.bullets?.map((item) => `- ${item}`).join('\n')
-      return {
-        content:
-          payload.content ??
-          payload.markdown ??
-          payload.summary ??
-          fromBullets ??
-          '',
-        citations: payload.citations,
-      }
-    } catch (error) {
-      lastError = error instanceof Error ? error.message : lastError
-    }
+  if (!response.ok) {
+    throw new Error(await parseError(response))
   }
 
-  throw new Error(lastError)
+  const payload = (await response.json()) as StudioResponse
+  if (typeof payload.content !== 'string') {
+    throw new Error(`Unexpected ${STUDIO_PATHS[action]} response shape.`)
+  }
+
+  return {
+    content: payload.content,
+    citations: payload.citations,
+  }
 }

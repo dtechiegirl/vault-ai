@@ -52,7 +52,7 @@ export function DropZone() {
         }}
       />
       <IconUpload />
-      <p>Drop your PDFs here</p>
+      <p>Drop PDF, PPTX, or TXT files here</p>
     </div>
   )
 }
