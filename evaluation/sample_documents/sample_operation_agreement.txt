@@ -1,0 +1,141 @@
+--- Page 1 ---
+TECHHUB LTD OPERATION AGREEMENT
+Between
+THE FACULTY OF LAW, SAMPLE UNIVERSITY
+and
+TECHHUB LTD
+Commencement Date: ______________________
+
+PREAMBLE
+This Hub Operation Agreement ("Agreement") is entered into as of the Commencement Date set out
+above by and between:
+• The Faculty of Law of Sample University being a partner ("the Faculty"); and
+• TechHub LTD, a technology enterprise duly registered in Nigeria ("the Operator" or
+"TechHub").
+The Faculty and TechHub are hereinafter collectively referred to as "the Parties" and individually as
+a "Party."
+
+1. PURPOSE
+This Agreement defines the terms under which the Faculty grant TechHub the exclusive right to
+operate a technology hub, co-working space, and digital training center within the Faculty of Law
+premises. The parties intend this arrangement to benefit students and the wider university community
+while enabling TechHub to operate a sustainable commercial enterprise.
+
+2. DEFINITIONS
+In this Agreement, unless the context otherwise requires:
+• "Commencement Date" means the date first written above on the cover page of this Agreement;
+• "Premises" means the physical space within the Faculty of Law described in Schedule A attached hereto;
+• "TechHub Infrastructure" means all solar panels, batteries, inverters, internet equipment, furniture, and other assets installed by TechHub;
+• "Revenue" means workspace fees received by TechHub from users of the Premises, excluding VAT and other applicable taxes;
+• "University Community" means currently enrolled students, academic staff, and administrative staff of the University;
+• "NDPA" means the Nigeria Data Protection Act 2023 and any successor legislation;
+• "Force Majeure Event" means any event beyond a party's reasonable control, including but not limited to industrial strikes, campus closure, fire, flood, or acts of government, Civil & Political Unrest, acts of God.
+
+--- Page 2 ---
+3. LEASED PREMISES
+The faculty grants the operator exclusive use of the designated space within the Faculty of Law as
+described and delineated in Schedule A (the "Premises"). Schedule A, which forms an integral part of
+this Agreement, shall specify:
+• The exact floor plan and dimensions of the Premises;
+• The location within the Faculty of Law building;
+• Any shared or common areas to which the operator shall have access; and
+• Any areas expressly excluded from the grant of use.
+
+4. TERM
+This Agreement shall run for three (3) years commencing on the Commencement Date and expiring on
+the third anniversary thereof, unless earlier terminated in accordance with the provisions of this
+Agreement.
+
+4.1 Renewal Priority
+The operator shall have the first right of refusal to renew this Agreement for a further term of three (3)
+years on terms to be negotiated in good faith, subject to:
+• Written notice of intention to renew given not less than six (6) months before expiry;
+• Satisfactory performance assessed against the criteria set out in Schedule B; and
+• Mutual agreement on any revised financial terms.
+
+--- Page 3 ---
+5. EXCLUSIVITY
+During the term of this Agreement, the Faculty shall not:
+• Operate or permit any third party to operate a competing technology hub, co-working space,
+or digital training centre within the Faculty of Law building or within [50] metres of the Premises; or
+• Grant any rights to any third party that would materially interfere with TechHub's operations
+under this Agreement.
+
+6. PERMITTED USE
+The Premises shall be used for:
+• Co-working and productivity services;
+• Electronic library (E-Library) for law students;
+• Internet and electricity services;
+• Tech training and academy programs;
+• Workshops, events, and innovation activities
+
+7. FINANCIAL TERMS
+7.1 Revenue Share
+In consideration of the grant of exclusive use of the Premises, TechHub shall remit to the
+university/faculty twenty-five percent (25%) of workspace revenue earned in each calendar month within
+fifteen (15) business days of the end of that month.
+For the avoidance of doubt, Revenue share shall apply to co-working and workspace fees.
+
+7.2 Reporting
+TechHub shall provide the Faculty with monthly operational and revenue reports within ten (15)
+business days after the end of each month through its dedicated digital management platform and
+supporting written documentation, where necessary.
+
+--- Page 4 ---
+8. INSTALLATION & OWNERSHIP OF EQUIPMENT
+The operator shall have the right to install, at its own cost and risk, solar panels, batteries, internet
+equipment, furniture, and any other equipment reasonably necessary for the permitted use.
+
+8.1 Ownership Protection
+All equipment installed by the operator shall remain the sole and exclusive property of TechHub at
+all times.
+
+8.2 Removal Rights
+Upon termination or expiry of this Agreement:
+• The operator shall have sixty (60) days to remove all installed equipment;
+• Removal shall be carried out so as to cause no permanent structural damage to the Premises.
+
+9. ACCESS & OPERATIONAL RIGHTS
+The operator shall have reasonable daily access to the Premises, including weekends and public
+holidays, subject only to bona fide security or emergency closures of the university with reasonable
+prior notice where practicable. Any planned maintenance or closure affecting the premises shall be
+communicated in writing to TechHub at least fourteen (15) days in advance.
+
+--- Page 6 ---
+15. DATA OWNERSHIP & PROTECTION
+All user and customer data generated through TechHub services on the premises shall remain the
+sole property of TechHub, subject to the following:
+• TechHub shall comply fully with the Nigeria Data Protection Regulation 2019 (NDPR) and
+any successor legislation;
+• TechHub shall maintain a lawful basis for all data processing activities;
+• TechHub shall implement appropriate technical and organisational security measures to
+protect personal data;
+• TechHub shall not sell or transfer personal data of University Community members to third
+parties without their informed consent.
+
+--- Page 7 ---
+16.3 Termination Without Cause
+Either Party may terminate this Agreement without cause by giving not less than ninety (90) days'
+written notice to the other Parties.
+
+18. EXIT / BUYOUT
+If, during the term of this Agreement, the University or Faculty wishes to take over the operation of
+the hub, it shall give TechHub not less than six (6) months' prior written notice of its intention.
+
+19. GOVERNANCE
+The Parties shall meet not less than once every six (6) months to review operations, address any
+concerns, and discuss the development of the relationship.
+
+--- Page 8 ---
+22. GOVERNING LAW
+This Agreement shall be governed by and construed in accordance with the laws of the Federal
+Republic of Nigeria. The Parties submit to the non-exclusive jurisdiction of the courts of Nigeria for
+any matter not referred to arbitration.
+
+--- Page 10 ---
+SCHEDULE A – DESCRIPTION OF PREMISES
+(To be completed and signed by the Parties prior to or simultaneously with the execution of this Agreement)
+Building: _______________________________________________
+Floor/Wing: _____________________________________________
+Room/Unit Reference: ____________________________________
+Approximate Area (sq. m): _______________________________
