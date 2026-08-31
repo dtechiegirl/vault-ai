@@ -159,4 +159,4 @@ ollama serve
 Assigned mentor: God'sgift Olomu
 
 ## Program
-TAG AI Engineering Bootcamp: Cohort 1
+TAG AI Engineering Bootcamp: Cohort 1 
