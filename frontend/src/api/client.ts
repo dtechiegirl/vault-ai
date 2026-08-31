@@ -48,7 +48,7 @@ function mapStatus(value: string): VaultDocument['status'] {
   if (value === 'empty' || value === 'empty_text') return 'empty'
   if (value === 'error' || value === 'failed') return 'error'
   if (value === 'uploading') return 'uploading'
-  return 'indexed'
+  return 'error'
 }
 
 function mapDocument(record: DocumentResponse): VaultDocument {
