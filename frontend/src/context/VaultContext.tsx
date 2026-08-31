@@ -130,9 +130,9 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         const kind = fileKindFromName(file.name) ?? 'txt'
         const localId = uid()
         setPreviewMode(false)
-        setMessages((current) => (previewMode ? [] : current))
+        setMessages([])
         setDocuments((current) => [
-          ...(previewMode ? [] : current),
+          ...current,
           {
             id: localId,
             filename: file.name,
@@ -162,13 +162,13 @@ export function VaultProvider({ children }: { children: ReactNode }) {
             current.map((doc) =>
               doc.id === localId
                 ? {
-                    ...doc,
-                    status: connection === 'online' ? 'error' : 'indexed',
-                    error:
-                      connection === 'online'
-                        ? 'Upload failed on the local API.'
-                        : undefined,
-                  }
+                  ...doc,
+                  status: connection === 'online' ? 'error' : 'indexed',
+                  error:
+                    connection === 'online'
+                      ? 'Upload failed on the local API.'
+                      : undefined,
+                }
                 : doc,
             ),
           )
@@ -222,11 +222,11 @@ export function VaultProvider({ children }: { children: ReactNode }) {
           current.map((message) =>
             message.id === pendingId
               ? {
-                  ...message,
-                  pending: false,
-                  content:
-                    'No indexed documents are available. Upload a PDF, PPTX, or TXT file, or load the sample workspace.',
-                }
+                ...message,
+                pending: false,
+                content:
+                  'No indexed documents are available. Upload a PDF, PPTX, or TXT file, or load the sample workspace.',
+              }
               : message,
           ),
         )
@@ -238,12 +238,12 @@ export function VaultProvider({ children }: { children: ReactNode }) {
           current.map((message) =>
             message.id === pendingId
               ? {
-                  ...message,
-                  pending: false,
-                  error: true,
-                  content:
-                    'The local API is offline. Start FastAPI on port 8000, or load the sample workspace to preview grounded answers and citations.',
-                }
+                ...message,
+                pending: false,
+                error: true,
+                content:
+                  'The local API is offline. Start FastAPI on port 8000, or load the sample workspace to preview grounded answers and citations.',
+              }
               : message,
           ),
         )
@@ -256,33 +256,33 @@ export function VaultProvider({ children }: { children: ReactNode }) {
             ? await askQuestion(trimmed, liveIds(documents))
             : previewAnswer(trimmed)
 
-          setMessages((current) =>
-            current.map((message) =>
-              message.id === pendingId
-                ? {
-                    ...message,
-                    pending: false,
-                    content: result.answer || 'Not found in provided documents',
-                    citations: result.citations,
-                  }
-                : message,
-            ),
-          )
-        } catch {
-          setMessages((current) =>
-            current.map((message) =>
-              message.id === pendingId
-                ? {
-                    ...message,
-                    pending: false,
-                    error: true,
-                    content:
-                      'The local model did not respond. Confirm Ollama is running on localhost:11434 and that the FastAPI /chat endpoint is available.',
-                  }
-                : message,
-            ),
-          )
-        }
+        setMessages((current) =>
+          current.map((message) =>
+            message.id === pendingId
+              ? {
+                ...message,
+                pending: false,
+                content: result.answer || 'Not found in provided documents',
+                citations: result.citations,
+              }
+              : message,
+          ),
+        )
+      } catch {
+        setMessages((current) =>
+          current.map((message) =>
+            message.id === pendingId
+              ? {
+                ...message,
+                pending: false,
+                error: true,
+                content:
+                  'The local model did not respond. Confirm Ollama is running on localhost:11434 and that the FastAPI /chat endpoint is available.',
+              }
+              : message,
+          ),
+        )
+      }
     },
     [connection, documents, previewMode],
   )
