@@ -1,0 +1,247 @@
+{
+  "dataset_info": {
+    "project": "Vault AI",
+    "created_by": "Temilolaoluwa Tomoloju",
+    "description": "Golden Q&A evaluation set for testing factual groundedness and citation accuracy.",
+    "source_documents": [
+      "sample_operation_agreement.txt",
+      "EMPLOYAG_Sample.pdf",
+      "NPF_Microfinance_Bank_Annual_Report_2025.pdf"
+    ]
+  },
+  "golden_qa": [
+    {
+      "id": "Q001",
+      "question": "How long is the initial term of the TechHub operation agreement?",
+      "expected_answer": "The agreement runs for three (3) years from the Commencement Date.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 2
+    },
+    {
+      "id": "Q002",
+      "question": "What percentage of workspace revenue must TechHub remit to the university each month?",
+      "expected_answer": "TechHub must remit twenty-five percent (25%) of workspace revenue earned each calendar month.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 3
+    },
+    {
+      "id": "Q003",
+      "question": "How many days' written notice is required for a party to terminate the TechHub agreement without cause?",
+      "expected_answer": "Not less than ninety (90) days' written notice is required.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 7
+    },
+    {
+      "id": "Q004",
+      "question": "How many days does TechHub have to remove its installed equipment after termination or expiry of the agreement?",
+      "expected_answer": "TechHub has sixty (60) days to remove all installed equipment.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 4
+    },
+    {
+      "id": "Q005",
+      "question": "Under what law is the TechHub agreement governed?",
+      "expected_answer": "The agreement is governed by and construed in accordance with the laws of the Federal Republic of Nigeria.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 8
+    },
+    {
+      "id": "Q006",
+      "question": "How much advance written notice must the Faculty give TechHub for planned maintenance or closures?",
+      "expected_answer": "The Faculty must communicate planned maintenance or closures affecting the premises in writing at least fourteen (15) days in advance.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 4
+    },
+    {
+      "id": "Q007",
+      "question": "How many months' prior written notice must the University give if it wants to buy out TechHub's operation?",
+      "expected_answer": "The University must give not less than six (6) months' prior written notice of its intention to take over the operation.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 7
+    },
+    {
+      "id": "Q008",
+      "question": "Under the TechHub agreement, how often must the Parties meet to review operations?",
+      "expected_answer": "The Parties shall meet not less than once every six (6) months to review operations.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 7
+    },
+    {
+      "id": "Q009",
+      "question": "What data protection regulation must TechHub comply with under the agreement?",
+      "expected_answer": "TechHub must comply fully with the Nigeria Data Protection Regulation 2019 (NDPR) and any successor legislation.",
+      "source_document": "sample_operation_agreement.txt",
+      "page_number": 6
+    },
+    {
+      "id": "Q010",
+      "question": "What is the length of the mandatory probationary period in the employment agreement?",
+      "expected_answer": "The probationary period is three months.",
+      "source_document": "EMPLOYAG_Sample.pdf",
+      "page_number": 2
+    },
+    {
+      "id": "Q011",
+      "question": "What hourly rate will the Employer pay the Employee under the agreement?",
+      "expected_answer": "The Employer will pay the Employee at a rate of $26.00 per hour.",
+      "source_document": "EMPLOYAG_Sample.pdf",
+      "page_number": 3
+    },
+    {
+      "id": "Q012",
+      "question": "What overtime rate applies if the Employee works extra hours?",
+      "expected_answer": "The Employee is paid at 1.5 (one and a half) times their normal compensation for extra time worked.",
+      "source_document": "EMPLOYAG_Sample.pdf",
+      "page_number": 3
+    },
+    {
+      "id": "Q013",
+      "question": "How much notice must the Employer give before changing employee benefits?",
+      "expected_answer": "The Employer must give 60 days written notice of any changes to benefits.",
+      "source_document": "EMPLOYAG_Sample.pdf",
+      "page_number": 4
+    },
+    {
+      "id": "Q014",
+      "question": "What is the Employee's job title under this agreement?",
+      "expected_answer": "The Employee is employed as a Sales Representative.",
+      "source_document": "EMPLOYAG_Sample.pdf",
+      "page_number": 2
+    },
+    {
+      "id": "Q015",
+      "question": "On what date does the Employee's employment commence under this agreement?",
+      "expected_answer": "The Employee's employment commences on September 24th, 2006.",
+      "source_document": "EMPLOYAG_Sample.pdf",
+      "page_number": 1
+    },
+    {
+      "id": "Q016",
+      "question": "What was NPF Microfinance Bank's profit for the year ended 31 December 2025?",
+      "expected_answer": "Profit for the year was ₦2,905,585,000 (2,905,585 thousand naira).",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 4
+    },
+    {
+      "id": "Q017",
+      "question": "What cash dividend per share did the Board recommend for the year ended 31 December 2025?",
+      "expected_answer": "The Board recommended a cash dividend of 20 kobo per share.",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 4
+    },
+    {
+      "id": "Q018",
+      "question": "How many branches does NPF Microfinance Bank currently operate nationwide?",
+      "expected_answer": "The Bank currently has 49 branches nationwide.",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 4
+    },
+    {
+      "id": "Q019",
+      "question": "What was the Bank's basic and diluted earnings per share for 2025, in kobo?",
+      "expected_answer": "Basic and diluted earnings per share was 48 kobo for 2025 (compared to 26 kobo in 2024).",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 33
+    },
+    {
+      "id": "Q020",
+      "question": "What was NPF Microfinance Bank's gross earnings for the year ended 31 December 2025?",
+      "expected_answer": "Gross earnings for the year were ₦19,366,146,000 (19,366,146 thousand naira).",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 33
+    },
+    {
+      "id": "Q021",
+      "question": "What was the total dividend paid by NPF Microfinance Bank in 2025, as shown in the statement of changes in equity?",
+      "expected_answer": "Dividend paid was ₦898,943,000 (898,943 thousand naira).",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 34
+    },
+    {
+      "id": "Q022",
+      "question": "Who is NPF Microfinance Bank's independent auditor?",
+      "expected_answer": "The independent auditor is Deloitte & Touche.",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 3
+    },
+    {
+      "id": "Q023",
+      "question": "When did NPF Microfinance Bank's shares get listed on the Nigerian Stock Exchange?",
+      "expected_answer": "The Bank's shares were listed on the Nigerian Stock Exchange on 1 December 2010.",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 4
+    },
+    {
+      "id": "Q024",
+      "question": "What shareholding percentage does the Nigeria Police Co-operative Society Limited hold in NPF Microfinance Bank as at 31 December 2025?",
+      "expected_answer": "The Nigeria Police Co-operative Society Limited holds 62.63% of the issued ordinary share capital, with 3,753,230,767 shares.",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 6
+    },
+    {
+      "id": "Q025",
+      "question": "How much did NPF Microfinance Bank lose to ATM electronic fraud in 2025, and how much was recovered?",
+      "expected_answer": "There were 3 incidents of ATM electronic fraud totaling ₦5,452,650 in actual loss, of which ₦5,452,650 was recovered — a 100% recovery rate.",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 7
+    },
+    {
+      "id": "Q026",
+      "question": "How many total employees did NPF Microfinance Bank have in 2025, broken down by gender?",
+      "expected_answer": "The Bank had 620 employees in 2025: 307 male (50%) and 313 female (50%).",
+      "source_document": "NPF_Microfinance_Bank_Annual_Report_2025.pdf",
+      "page_number": 8
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "id": "N001",
+      "question": "What is TechHub's policy on remote work stipends for its staff?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "The TechHub agreement covers hub operations and revenue share; it does not address staff remote-work stipends."
+    },
+    {
+      "id": "N002",
+      "question": "What health insurance benefits does the Employee receive under the employment agreement?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "The sample employment agreement text provided does not specify health insurance benefits; it only mentions unspecified benefits 'reflected in current revisions of the Employer's booklets and manuals.'"
+    },
+    {
+      "id": "N003",
+      "question": "What is the CEO of NPF Microfinance Bank's individual annual salary?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "Individual executive compensation figures are not disclosed in the extracted sections of the annual report."
+    },
+    {
+      "id": "N004",
+      "question": "How many square meters is the TechHub premises at the Faculty of Law?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "Schedule A, which would contain this figure, is left blank/unfilled in the sample agreement."
+    },
+    {
+      "id": "N005",
+      "question": "What is NPF Microfinance Bank's total customer deposit balance as at 31 December 2025?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "This figure appears on the Statement of Financial Position (page 32), which is rendered without an extractable text layer in the source PDF and was not included in this evaluation set."
+    },
+    {
+      "id": "N006",
+      "question": "What is the Employee's job title in the TechHub agreement?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "The TechHub agreement is a hub operating agreement between a university faculty and a company; it contains no employee job title, which only exists in the separate employment agreement document."
+    },
+    {
+      "id": "N007",
+      "question": "How many disabled persons did NPF Microfinance Bank employ during the 2025 financial year?",
+      "expected_behavior": "not_found",
+      "expected_response": "Not found in provided documents.",
+      "reason": "The report states the Bank 'did not employ any persons with physical challenges' during the year, but does not give a numeric count elsewhere — this tests whether the system correctly reports the qualitative fact rather than fabricating a number."
+    }
+  ]
+}
