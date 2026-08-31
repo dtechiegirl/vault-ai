@@ -1,4 +1,6 @@
 from pathlib import Path
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -38,18 +40,26 @@ app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
 
+def mock_ingest_document(document):
+    document.status = "indexed"
+    return 1
+
 
 def test_upload_pdf():
-    response = client.post(
-        "/documents/upload",
-        files={
-            "file": (
-                "test.pdf",
-                b"fake pdf content",
-                "application/pdf",
-            )
-        },
-    )
+    with patch(
+        "backend.app.api.routes.documents.ingest_document",
+        side_effect=mock_ingest_document,
+    ):
+        response = client.post(
+            "/documents/upload",
+            files={
+                "file": (
+                    "test.pdf",
+                    b"fake pdf content",
+                    "application/pdf",
+                )
+            },
+        )
 
     assert response.status_code == 201
 
@@ -57,23 +67,27 @@ def test_upload_pdf():
 
     assert data["filename"] == "test.pdf"
     assert data["file_type"] == "pdf"
-    assert data["status"] == "uploaded"
+    assert data["status"] == "indexed"
     assert data["storage_path"].endswith(".pdf")
     assert "id" in data
     assert Path(data["storage_path"]).exists()
 
 
 def test_upload_txt():
-    response = client.post(
-        "/documents/upload",
-        files={
-            "file": (
-                "notes.txt",
-                b"Hello Vault AI",
-                "text/plain",
-            )
-        },
-    )
+    with patch(
+        "backend.app.api.routes.documents.ingest_document",
+        side_effect=mock_ingest_document,
+    ):
+        response = client.post(
+            "/documents/upload",
+            files={
+                "file": (
+                    "notes.txt",
+                    b"Hello Vault AI",
+                    "text/plain",
+                )
+            },
+        )
 
     assert response.status_code == 201
 
@@ -81,6 +95,7 @@ def test_upload_txt():
 
     assert data["filename"] == "notes.txt"
     assert data["file_type"] == "txt"
+    assert data["status"] == "indexed"
 
 
 def test_upload_unsupported_file_type():
@@ -97,18 +112,23 @@ def test_upload_unsupported_file_type():
 
     assert response.status_code == 400
     assert "Unsupported file type" in response.json()["detail"]
-    
+
+
 def test_uploaded_file_uses_document_id_for_storage():
-    response = client.post(
-        "/documents/upload",
-        files={
-            "file": (
-                "my-report.pdf",
-                b"fake pdf content",
-                "application/pdf",
-            )
-        },
-    )
+    with patch(
+        "backend.app.api.routes.documents.ingest_document",
+        side_effect=mock_ingest_document,
+    ):
+        response = client.post(
+            "/documents/upload",
+            files={
+                "file": (
+                    "my-report.pdf",
+                    b"fake pdf content",
+                    "application/pdf",
+                )
+            },
+        )
 
     assert response.status_code == 201
 
