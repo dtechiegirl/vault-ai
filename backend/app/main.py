@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 from backend.app.api.routes.documents import router as documents_router
 from backend.app.db.database import init_db
+from backend.app.api.routes.chat import router as chat_router
+from backend.app.api.routes.studio import router as studio_router
 
 
 app = FastAPI(
@@ -14,7 +16,8 @@ app = FastAPI(
 init_db()
 
 app.include_router(documents_router)
-
+app.include_router(chat_router)
+app.include_router(studio_router)
 
 @app.get("/health")
 def health_check():
