@@ -57,32 +57,22 @@ async def upload_document(
     )
 
     try:
+        # Save uploaded file
         content = await file.read()
         file_path.write_bytes(content)
 
         document.storage_path = str(file_path)
 
-        db.commit()
-        db.refresh(document)
-
-    except Exception:
-        db.rollback()
-
-        if file_path.exists():
-            file_path.unlink()
-
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to store document.",
-        )
-
-    try:
+        # Ingest document into chunks/vector store
         ingest_document(document)
 
+        # Save final document state
         db.commit()
         db.refresh(document)
 
-    except Exception:
+        return document
+
+    except Exception as e:
         db.rollback()
 
         document = get_document(db, document.id)
@@ -91,12 +81,13 @@ async def upload_document(
             document.status = "error"
             db.commit()
 
+        print(f"[INGESTION ERROR] {type(e).__name__}: {e}")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Document ingestion failed.",
+            detail=f"Document ingestion failed: {e}",
         )
-
-    return document
+        
 
 
 @router.get(
