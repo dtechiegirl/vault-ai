@@ -21,7 +21,10 @@ def ingest_document(document: Document) -> int:
         # 1. Parse the document into pages/slides.
         document.status = "processing"
 
-        pages = parse_document(str(file_path))
+        pages = parse_document(
+            str(file_path),
+            source_name=document.filename
+        )
 
         if not pages:
             document.status = "empty"

@@ -63,16 +63,15 @@ def get_embedding(text: str) -> List[float]:
     return response["embedding"]
 
 
-def get_vector_collection():
+def get_vector_collection(collection_name: str = COLLECTION_NAME):
     """
-    Return the persistent ChromaDB collection used by Vault AI.
+    Return a persistent ChromaDB collection.
     """
     client = chromadb.PersistentClient(path=VECTOR_STORE_DIR)
 
     return client.get_or_create_collection(
-        name=COLLECTION_NAME,
+        name=collection_name,
     )
-
 
 def create_vector_store(chunks: List[Dict[str, Any]]) -> int:
     """

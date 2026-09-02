@@ -1,6 +1,10 @@
 from typing import Any
 
 from ingestion.embedding import get_embedding, get_vector_collection
+from retrieval.reranker import rerank_results
+
+
+CANDIDATE_K = 8
 
 
 def search_documents(
@@ -9,15 +13,18 @@ def search_documents(
     top_k: int = 3,
 ) -> list[dict[str, Any]]:
     """
-    Search ChromaDB for chunks relevant to the user's query.
+    Search ChromaDB and rerank the retrieved chunks.
+
+    The search first retrieves a larger candidate pool from ChromaDB,
+    then uses the reranker to select the best final results.
 
     Args:
         query: User's natural-language question.
         document_ids: Optional list of document IDs to restrict retrieval.
-        top_k: Maximum number of chunks to return.
+        top_k: Maximum number of final chunks to return.
 
     Returns:
-        List of retrieved chunks with their metadata and similarity distance.
+        Reranked list of the most relevant chunks.
     """
     if not query.strip():
         return []
@@ -32,9 +39,11 @@ def search_documents(
 
     query_embedding = get_embedding(query)
 
+    candidate_k = max(CANDIDATE_K, top_k)
+
     query_kwargs: dict[str, Any] = {
         "query_embeddings": [query_embedding],
-        "n_results": top_k,
+        "n_results": candidate_k,
         "include": ["documents", "metadatas", "distances"],
     }
 
@@ -66,4 +75,9 @@ def search_documents(
             }
         )
 
-    return retrieved
+    reranked = rerank_results(
+        query=query,
+        results=retrieved,
+    )
+
+    return reranked[:top_k]
