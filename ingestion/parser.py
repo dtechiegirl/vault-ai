@@ -12,7 +12,10 @@ Extracts content while preserving page/slide metadata for citation tracking.
 import os
 from typing import List, Dict, Any
 
-def parse_document(file_path: str) -> List[Dict[str, Any]]:
+def parse_document(
+    file_path: str,
+    source_name: str | None = None,
+) -> List[Dict[str, Any]]:
     """
     Parses a document file and extracts structured text page-by-page or slide-by-slide.
     
@@ -32,7 +35,7 @@ def parse_document(file_path: str) -> List[Dict[str, Any]]:
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
-    filename = os.path.basename(file_path)
+    filename = source_name or os.path.basename(file_path)
     extension = os.path.splitext(filename)[1].lower()
     pages_data: List[Dict[str, Any]] = []
 
@@ -83,11 +86,50 @@ def parse_document(file_path: str) -> List[Dict[str, Any]]:
     elif extension == ".txt":
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
-            if content.strip():
+
+        current_page = None
+        current_text = []
+
+        for line in content.splitlines():
+            line = line.strip()
+
+        # Detect page markers such as:
+        # --- Page 1 ---
+        # --- Page 2 ---
+            if line.startswith("--- Page ") and line.endswith(" ---"):
+            # Save the previous page before starting a new one.
+                if current_page is not None:
+                    page_text = "\n".join(current_text).strip()
+
+                    if page_text:
+                        pages_data.append({
+                            "text": page_text,
+                            "page_number": current_page,
+                            "source": filename,
+                        })    
+
+            # Extract page number.
+                page_number_text = line[len("--- Page "):-len(" ---")]
+
+                try:
+                    current_page = int(page_number_text)
+                except ValueError:
+                    current_page = None
+
+                current_text = []
+
+            elif current_page is not None:
+                current_text.append(line)
+
+    # Save the final page.
+        if current_page is not None:
+            page_text = "\n".join(current_text).strip()
+
+            if page_text:
                 pages_data.append({
-                    "text": content.strip(),
-                    "page_number": 1,
-                    "source": filename
+                    "text": page_text,
+                    "page_number": current_page,
+                    "source": filename,
                 })
 
     else:
