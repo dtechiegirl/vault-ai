@@ -1,9 +1,15 @@
-from backend.app.schemas.chat import ChatResponse, Citation
-from retrieval.search import search_documents
+import os
+
 import ollama
 
+from dotenv import load_dotenv
 
-CHAT_MODEL = "llama3.2:3b"
+from backend.app.schemas.chat import ChatResponse, Citation
+from retrieval.search import search_documents
+
+
+load_dotenv()
+CHAT_MODEL = os.getenv("CHAT_MODEL", "llama3.2:3b")
 
 
 def answer_question(

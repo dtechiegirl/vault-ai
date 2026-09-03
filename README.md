@@ -1,162 +1,364 @@
 # TAG AI Engineering Bootcamp: Cohort 1
 
-## Team Accelerators: Project 1
+## Team Accelerators — Project 1
 
 This repository contains Team Accelerators' work for Project 1 of the TAG AI Engineering Bootcamp.
 
 ## Team Members
 
-- Yifieyeh Achesomie Goni
-- SOULEY Raquib
-- Tomoloju Temilolaoluwa
-- Iyamokuma inatimi
-- Aishat Adebanjo
-- Monday Imeobong
+* Yifieyeh Achesomie Goni
+* SOULEY Raquib
+* Tomoloju Temilolaoluwa
+* Iyamokuma Inatimi
+* Aishat Adebanjo
+* Monday Imeobong
 
 # Vault AI — Local & Private Document Intelligence Assistant
 
-## Project Brief
-Vault AI is a 100% offline, privacy-first document intelligence platform. It allows users to upload local documents (PDF, PPTX, TXT), ask questions about them in natural language, and receive grounded answers with verifiable page citations. It runs entirely on the user's own machine using a local LLM served through Ollama; no cloud APIs, no subscription fees, and no data ever leaves the device.
+## Project Overview
 
-This solves a real problem for compliance-conscious organisations (law firms, healthcare providers, financial consultancies) who cannot risk sending sensitive documents to third-party cloud AI services due to NDA, GDPR, or data breach concerns.
+Vault AI is a local-first document intelligence platform that allows users to upload documents, ask questions about their content in natural language, and receive grounded answers with source citations.
 
-## Objectives
-- Allow users to upload and index single or multiple documents (PDF, PPTX, TXT) locally.
-- Enable natural language Q&A that is answered strictly from the uploaded documents, with no fabrication.
-- Provide a source citation (file name + page number) with every answer so it can be verified.
-- Provide one-click actions in a "Studio" panel: Generate Executive Summary, Extract Key Entities & Dates, Auto-Generate FAQ.
-- Ensure the system clearly states "Not found in provided documents" rather than hallucinating when an answer isn't present.
-- Demonstrate the entire workflow running fully offline (e.g. in Airplane Mode) by Demo Day.
+The system processes documents, creates local embeddings, retrieves relevant evidence, reranks the retrieved chunks, and passes only the most relevant context to a locally running LLM through Ollama.
 
-## Tech Stack
-- **LLM Inference:** Ollama, running Llama 3.2 (3B or 1B, 4-bit quantized)
-- **Embeddings:** Local transformer model (e.g. `all-MiniLM-L6-v2`) or Ollama embedding endpoint
-- **Vector Store:** ChromaDB (embedded, persisted locally on disk)
-- **Document Parsing:** Docling / PyPDF
-- **Backend:** FastAPI, confirmed working locally with:
-  - `fastapi` 0.128.8
-  - `uvicorn[standard]` 0.39.0
-  - `pydantic` 2.13.5
-  - `sqlalchemy` 2.0.52
-  - `httpx` 0.28.1
-  - `pytest` 8.4.2
-  - `python-multipart` 0.0.20
+The goal is to provide useful document intelligence without sending sensitive documents to external AI APIs.
 
-  > ⚠️ The versions currently pinned in `backend/requirements.txt` (e.g. `fastapi==0.141.1`, `httpx2==2.12.0`) don't exist on PyPI and will fail to install. Use the versions above, or open ranges like `fastapi>=0.115,<1.0`, until the file is corrected.
-- **Frontend:** Not yet built — the `frontend/` folder currently exists but is empty. Planned: React or Streamlit, 3-panel UI (Sources, Chat, Studio).
+> **Core idea:** Upload your documents. Ask questions. Get evidence-backed answers — locally and privately.
+
+## Key Features
+
+* Local document ingestion and indexing
+* PDF, PPTX and TXT document support
+* Page/slide metadata preservation for citations
+* Local text embeddings using Ollama
+* Persistent local ChromaDB vector storage
+* Semantic retrieval
+* Retrieval reranking using:
+
+  * Semantic similarity
+  * Lexical matching
+  * Section-heading matching
+  * Phrase matching
+* Single-document question answering
+* Multi-document retrieval support
+* Source citations containing document name and page
+* Grounded-answer prompting
+* Safe not-found behavior
+* Local Ollama model selection through environment configuration
+* Automated retrieval evaluation
+* Automated backend tests
+* React frontend
+* FastAPI backend
+
+## System Architecture
+
+```text
+                         ┌─────────────────────┐
+                         │    React Frontend   │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │   FastAPI Backend   │
+                         └──────────┬──────────┘
+                                    │
+                           User Question
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │   Query Embedding   │
+                         │   nomic-embed-text  │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │       ChromaDB      │
+                         │  Candidate Retrieval│
+                         │       Top 8         │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │      Reranker       │
+                         │ Semantic + Lexical  │
+                         │ Heading + Phrase    │
+                         └──────────┬──────────┘
+                                    │
+                               Final Top 3
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │       Ollama        │
+                         │      Local LLM      │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Grounded Answer +   │
+                         │      Citations      │
+                         └─────────────────────┘
+```
+
+## Supported Documents
+
+Currently supported:
+
+* PDF
+* PPTX
+* TXT
+
+The parser preserves document location metadata such as page or slide information so retrieved evidence can be cited back to the original source.
+
+## Technology Stack
+
+| Component        | Technology                       |
+| ---------------- | -------------------------------- |
+| Frontend         | React                            |
+| Backend          | FastAPI                          |
+| Language         | Python                           |
+| LLM Runtime      | Ollama                           |
+| Default LLM      | Llama 3.2 3B                     |
+| Local Model      | Configurable through `.env`      |
+| Embeddings       | `nomic-embed-text`               |
+| Vector Database  | ChromaDB                         |
+| Document Parsing | PyPDF / python-pptx / TXT parser |
+| Testing          | pytest                           |
+| Version Control  | Git + GitHub                     |
 
 ## Project Structure
-Confirmed as of the current `main` branch:
 
-```
+```text
 c1-accelerators-project-1/
+
 ├── backend/
 │   ├── __init__.py
 │   ├── app/
 │   │   ├── __init__.py
-│   │   ├── main.py       # FastAPI entry point (app object lives here)
-│   │   ├── api/          # Route definitions (e.g. documents upload, /health)
-│   │   ├── core/         # App config / settings
-│   │   ├── db/           # Database setup
-│   │   ├── schemas/      # Pydantic request/response models
-│   │   └── services/     # Business logic
-│   ├── requirements.txt
+│   │   ├── main.py
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── chat.py
+│   │   │   │   ├── documents.py
+│   │   │   │   └── studio.py
+│   │   │   └── ...
+│   │   ├── core/
+│   │   ├── db/
+│   │   ├── schemas/
+│   │   └── services/
+│   │       ├── chat_service.py
+│   │       ├── document_service.py
+│   │       ├── ingestion_service.py
+│   │       └── studio_service.py
 │   └── tests/
-├── frontend/              # Currently empty — no code yet
-├── ingestion/             # RAG ingestion pipeline (has active code, see PR #4)
-├── retrieval/             # Scaffolding only so far
-├── data/                  # Scaffolding only so far
-├── docs/                  # Scaffolding only so far
-├── evaluation/            # Scaffolding only so far
-├── scripts/               # Scaffolding only so far
+
+├── ingestion/
+│   ├── parser.py
+│   ├── chunker.py
+│   └── embedding.py
+
+├── retrieval/
+│   ├── search.py
+│   ├── reranker.py
+│   └── test_search.py
+
+├── evaluation/
+│   ├── dataset.py
+│   ├── golden_qa_set.json
+│   ├── ingest_evaluation_documents.py
+│   ├── retrieval_eval.py
+│   ├── test_dataset.py
+│   ├── test_retrieval_eval.py
+│   └── sample_documents/
+
+├── frontend/
+
+├── data/
+├── docs/
+├── scripts/
+├── .env.example
 ├── .gitignore
+├── requirements.txt
 └── README.md
 ```
 
-**Note:** `backend/` and `ingestion/` have real, working code. `frontend/`, `retrieval/`, `data/`, `docs/`, `evaluation/`, and `scripts/` are still just initial folder scaffolding as of this writing — update this section as those fill in.
-
 ## Getting Started
-Confirmed working steps for running the backend locally. The frontend isn't built yet, so there's no UI to open in a browser — you can exercise the API directly via the interactive docs page instead (see step 5).
 
 ### Prerequisites
-- Python 3.9+ (tested working on 3.9)
-- Git, with collaborator access to this repo (ask your team lead to add you if you get a 403 error)
 
-### 1. Clone the repo
-Using SSH (recommended — avoids repeated password/token prompts once set up):
+Install the following:
+
+* Python 3.11+
+* Node.js and npm
+* Git
+* Ollama
+
+Python 3.11.9 is the development environment currently used for the project.
+
+### 1. Clone the repository
+
 ```bash
 git clone git@github.com:tag-ecosystemai/c1-accelerators-project-1.git
+cd c1-accelerators-project-1
 ```
-Using HTTPS (if prompted for a password, use a GitHub Personal Access Token, not your account password):
+
+HTTPS can also be used:
+
 ```bash
 git clone https://github.com/tag-ecosystemai/c1-accelerators-project-1.git
+cd c1-accelerators-project-1
 ```
 
-### 2. Set up the backend environment
+### 2. Create the Python environment
+
+From the project root:
+
+#### Windows PowerShell
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+#### macOS / Linux
+
 ```bash
-cd c1-accelerators-project-1/backend
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
-Your terminal prompt should now start with `(venv)`, confirming the virtual environment is active.
 
-### 3. Install dependencies
+### 3. Install project dependencies
+
+All Python dependencies are managed through the single `requirements.txt` file at the project root.
+
 ```bash
 pip install -r requirements.txt
 ```
-> ⚠️ **Known issue:** as of this writing, `requirements.txt` has some pinned versions that don't exist on PyPI (e.g. `fastapi==0.141.1`, `httpx2==2.12.0`) and will fail with a "Could not find a version that satisfies the requirement" error. Until the file is fixed, install these confirmed-working versions instead:
-> ```
-> fastapi>=0.115,<1.0
-> uvicorn[standard]>=0.30
-> pydantic>=2.9,<3.0
-> pytest>=8.0
-> httpx>=0.27
-> sqlalchemy>=2.0
-> python-multipart>=0.0.9
-> ```
 
-### 4. Run the backend server
-Go back up to the project root first — the code's internal imports expect to be run from here, not from inside `backend/`:
+### 4. Configure the local LLM
+
+Vault AI uses an environment variable to select the Ollama chat model.
+
+Create a local `.env` file in the project root:
+
+```env
+CHAT_MODEL=llama3.2:3b
+```
+
+The repository provides `.env.example` as the template.
+
+The default project model is:
+
+```env
+CHAT_MODEL=llama3.2:3b
+```
+
+If your computer has limited RAM, you can use a smaller locally installed model without changing the application code.
+
+For example:
+
+```env
+CHAT_MODEL=qwen2.5:0.5b
+```
+
+The `.env` file is intentionally excluded from Git.
+
+### 5. Install the Ollama models
+
+Install Ollama and make sure it is running.
+
+Then pull the default model:
+
 ```bash
-cd ..
+ollama pull llama3.2:3b
+```
+
+Install the embedding model:
+
+```bash
+ollama pull nomic-embed-text
+```
+
+If using a smaller local model, pull that model as well:
+
+```bash
+ollama pull qwen2.5:0.5b
+```
+
+Check installed models:
+
+```bash
+ollama list
+```
+
+### 6. Start the backend
+
+From the project root:
+
+```bash
 uvicorn backend.app.main:app --reload
 ```
-Success looks like:
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000
-INFO:     Application startup complete.
+
+The API will be available at:
+
+```text
+http://127.0.0.1:8000
 ```
 
-### 5. Try it out
-Open your browser to:
-```
+FastAPI's interactive documentation is available at:
+
+```text
 http://127.0.0.1:8000/docs
 ```
-This is FastAPI's auto-generated interactive API page. Confirmed available so far:
-- `GET /health` — health check
-- `documents` — document upload endpoint
 
-Click an endpoint → "Try it out" → "Execute" to call it live and see a real response.
+### 7. Start the frontend
 
-### Ollama / RAG pipeline (not required yet)
-Needed once the RAG pipeline is wired into the backend, but not for the steps above:
+From the frontend directory:
+
 ```bash
-ollama pull llama3.2
-ollama serve
+cd frontend
+npm install
 ```
-[Install Ollama here](https://ollama.com/download) if you don't have it.
 
-## Team Workflow
-1. Create a branch before working on a feature or task.
-2. Do not work directly on the main branch.
-3. Push changes to your branch.
-4. Open a pull request when the work is ready.
-5. Another team member should review the pull request before it is merged.
-6. Keep commit messages clear and descriptive.
-7. Never commit passwords, API keys, tokens or other secrets.
+For development:
+
+```bash
+npm run dev
+```
+
+## Privacy
+
+Vault AI is designed as a local-first application.
+
+Document processing, embeddings, vector storage and LLM inference run locally through the application's local components.
+
+No cloud LLM API is required for the core workflow.
+
+This makes the architecture suitable for scenarios where documents may contain sensitive or confidential information.
+
+## Current Status
+
+Vault AI currently has:
+
+* Document ingestion
+* PDF, PPTX, and TXT parsing
+* Metadata and page tracking
+* Text chunking
+* Local embeddings
+* ChromaDB vector storage
+* Semantic retrieval
+* Retrieval reranking
+* Local LLM question answering
+* Source/page citations
+* Configurable Ollama models
+* Automated tests
+* Retrieval evaluation framework
+
+The retrieval pipeline currently achieves **100% Recall@3** on the 15-question positive evaluation set.
 
 ## Mentor
-Assigned mentor: God'sgift Olomu
+
+**Assigned Mentor:** God'sgift Olomu
 
 ## Program
-TAG AI Engineering Bootcamp: Cohort 1 
+
+**TAG AI Engineering Bootcamp — Cohort 1**
