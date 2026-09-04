@@ -34,6 +34,7 @@ import { fileKindFromName, isAllowedFile, uid } from '../utils'
 
 type VaultContextValue = {
   documents: VaultDocument[]
+  selectedDocumentIds: string[]
   messages: ChatMessage[]
   studioResult: StudioResult | null
   studioLoading: boolean
@@ -41,6 +42,7 @@ type VaultContextValue = {
   previewMode: boolean
   mobilePanel: MobilePanel
   setMobilePanel: (panel: MobilePanel) => void
+  toggleDocumentSelection: (id: string) => void
   ingestFiles: (files: FileList | File[]) => Promise<void>
   removeDocument: (id: string) => Promise<void>
   sendQuery: (query: string) => Promise<void>
@@ -64,6 +66,7 @@ function liveIds(documents: VaultDocument[]): string[] {
 
 export function VaultProvider({ children }: { children: ReactNode }) {
   const [documents, setDocuments] = useState<VaultDocument[]>(SAMPLE_DOCUMENTS)
+  const [selectedDocumentIds, setSelectedDocumentIds] = useState<string[]>([])
   const [messages, setMessages] = useState<ChatMessage[]>(SAMPLE_THREAD)
   const [studioResult, setStudioResult] = useState<StudioResult | null>(null)
   const [studioLoading, setStudioLoading] = useState(false)
@@ -105,6 +108,14 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       cancelled = true
       window.clearInterval(timer)
     }
+  }, [])
+
+  const toggleDocumentSelection = useCallback((id: string) => {
+    setSelectedDocumentIds((current) =>
+      current.includes(id)
+        ? current.filter((documentId) => documentId !== id)
+        : [...current, id],
+    )
   }, [])
 
   const ingestFiles = useCallback(
@@ -181,6 +192,9 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const removeDocument = useCallback(
     async (id: string) => {
       setDocuments((current) => current.filter((doc) => doc.id !== id))
+      setSelectedDocumentIds((current) =>
+            current.filter((documentId) => documentId !== id),
+            )
       if (connection === 'online' && !previewMode) {
         try {
           await deleteDocument(id)
@@ -253,7 +267,23 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       try {
         const result =
           connection === 'online'
-            ? await askQuestion(trimmed, liveIds(documents))
+            ? await askQuestion(
+                trimmed,
+                selectedDocumentIds.length > 0
+                  ? selectedDocumentIds
+                  : liveIds(documents),
+                messages
+                  .filter(
+                    (message) =>
+                      (message.role === 'user' || message.role === 'assistant') &&
+                      !message.pending &&
+                      !message.error,
+                  )
+                  .map((message) => ({
+                    role: message.role,
+                    content: message.content,
+                  })),
+              )
             : previewAnswer(trimmed)
 
         setMessages((current) =>
@@ -284,7 +314,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         )
       }
     },
-    [connection, documents, previewMode],
+    [connection, documents, messages, previewMode, selectedDocumentIds],
   )
 
   const runAction = useCallback(
@@ -351,6 +381,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const value = useMemo<VaultContextValue>(
     () => ({
       documents,
+      selectedDocumentIds,
       messages,
       studioResult,
       studioLoading,
@@ -358,6 +389,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       previewMode,
       mobilePanel,
       setMobilePanel,
+      toggleDocumentSelection,
       ingestFiles,
       removeDocument,
       sendQuery,
@@ -368,12 +400,14 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }),
     [
       documents,
+      selectedDocumentIds,
       messages,
       studioResult,
       studioLoading,
       connection,
       previewMode,
       mobilePanel,
+      toggleDocumentSelection,
       ingestFiles,
       removeDocument,
       sendQuery,
