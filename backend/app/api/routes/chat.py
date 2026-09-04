@@ -17,4 +17,5 @@ def chat(request: ChatRequest) -> ChatResponse:
     return answer_question(
         query=request.query,
         document_ids=request.document_ids,
+        history=request.history,
     )

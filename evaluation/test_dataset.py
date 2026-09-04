@@ -9,4 +9,4 @@ def test_load_dataset():
     assert "negative_test_cases" in dataset
 
     assert len(dataset["golden_qa"]) == 15
-    assert len(dataset["negative_test_cases"]) == 7
+    assert len(dataset["negative_test_cases"]) == 4

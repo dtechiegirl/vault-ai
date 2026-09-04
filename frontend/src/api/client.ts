@@ -117,6 +117,7 @@ export async function deleteDocument(id: string): Promise<void> {
 export async function askQuestion(
   query: string,
   documentIds: string[],
+  history: { role: string; content: string }[] = [],
 ): Promise<ChatPayload> {
   const response = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
@@ -124,6 +125,7 @@ export async function askQuestion(
     body: JSON.stringify({
       query,
       document_ids: documentIds,
+      history,
     }),
   })
 
