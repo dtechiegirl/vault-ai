@@ -1,27 +1,29 @@
-import { AppHeader } from './components/AppHeader'
-import { ChatPanel } from './components/ChatPanel'
-import { MobileNav } from './components/MobileNav'
-import { SourcesPanel } from './components/SourcesPanel'
-import { StudioPanel } from './components/StudioPanel'
-import { VaultProvider } from './context/VaultContext'
+import { useEffect, useState } from 'react'
+import { Landing } from './Landing'
+import { Workspace } from './Workspace'
+
+function currentPath(): string {
+  return window.location.pathname.replace(/\/+$/, '') || '/'
+}
 
 export default function App() {
-  return (
-    <VaultProvider>
-      <div className="app-shell">
-        <div className="app-card">
-          <AppHeader />
-          <main className="workspace">
-            <SourcesPanel />
-            <ChatPanel />
-            <StudioPanel />
-          </main>
-          <MobileNav />
-        </div>
-        <p className="app-footer">
-          Vault AI — Private document Q&A assistant, running fully local via Ollama
-        </p>
-      </div>
-    </VaultProvider>
-  )
+  const [path, setPath] = useState(currentPath)
+
+  useEffect(() => {
+    const onPop = () => setPath(currentPath())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  function go(to: string) {
+    window.history.pushState({}, '', to)
+    setPath(to.replace(/\/+$/, '') || '/')
+    window.scrollTo(0, 0)
+  }
+
+  if (path === '/app') {
+    return <Workspace onHome={() => go('/')} />
+  }
+
+  return <Landing onOpen={() => go('/app')} />
 }

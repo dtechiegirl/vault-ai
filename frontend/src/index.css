@@ -115,6 +115,20 @@ h3 {
   color: var(--navy);
 }
 
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.register-link {
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
 .offline-pill {
   background: var(--pill-bg);
   color: var(--pill-ink);
