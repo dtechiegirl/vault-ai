@@ -1,10 +1,16 @@
+import os
+
 import ollama
+
+from dotenv import load_dotenv
 
 from backend.app.schemas.studio import StudioResponse
 from retrieval.search import search_documents
 
 
-STUDIO_MODEL = "llama3.2:3b"
+load_dotenv()
+
+STUDIO_MODEL = os.getenv("CHAT_MODEL", "llama3.2:3b")
 
 
 ACTION_INSTRUCTIONS = {

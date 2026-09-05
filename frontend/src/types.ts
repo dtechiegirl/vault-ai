@@ -1,12 +1,17 @@
 export type FileKind = 'pdf' | 'pptx' | 'txt'
 
-export type DocumentStatus = 'uploading' | 'parsing' | 'indexed' | 'empty' | 'error'
+export type DocumentStatus =
+  | 'uploading'
+  | 'parsing'
+  | 'indexed'
+  | 'empty'
+  | 'error'
 
 export type ConnectionState = 'checking' | 'online' | 'offline'
 
 export type StudioAction = 'summary' | 'entities' | 'faq'
 
-export type MobilePanel = 'sources' | 'chat' | 'studio'
+export type MobilePanel = 'sources' | 'chat'
 
 export type VaultDocument = {
   id: string
@@ -28,25 +33,25 @@ export type ChatMessage = {
   id: string
   role: 'user' | 'assistant'
   content: string
-  citations?: Citation[]
   createdAt: string
   pending?: boolean
   error?: boolean
-}
-
-export type StudioResult = {
-  action: StudioAction
-  title: string
-  content: string
   citations?: Citation[]
 }
 
 export type ChatPayload = {
   answer: string
-  citations: Citation[]
+  citations?: Citation[]
 }
 
 export type StudioPayload = {
+  content: string
+  citations?: Citation[]
+}
+
+export type StudioResult = {
+  action: StudioAction
+  title: string
   content: string
   citations?: Citation[]
 }

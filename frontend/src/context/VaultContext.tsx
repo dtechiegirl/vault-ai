@@ -46,7 +46,7 @@ type VaultContextValue = {
   ingestFiles: (files: FileList | File[]) => Promise<void>
   removeDocument: (id: string) => Promise<void>
   sendQuery: (query: string) => Promise<void>
-  runAction: (action: StudioAction) => Promise<void>
+  runAction: (action: StudioAction, documentIds: string[]) => Promise<void>
   loadPreview: () => void
   clearStudio: () => void
   prompts: string[]
@@ -318,14 +318,19 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   )
 
   const runAction = useCallback(
-    async (action: StudioAction) => {
+    async (action: StudioAction, documentIds: string[]) => {
       const indexed = documents.filter((doc) => doc.status === 'indexed')
-      if (!indexed.length) {
-        setStudioResult({
+
+      const selectedIds = documentIds.filter((id) =>
+        indexed.some((doc) => doc.id === id),
+      )
+
+      if (!selectedIds.length) {
+       setStudioResult({
           action,
           title: ACTION_TITLES[action],
           content:
-            'Index at least one document before running studio actions.',
+            'Select at least one indexed document before running this action.',
         })
         return
       }
@@ -342,10 +347,11 @@ export function VaultProvider({ children }: { children: ReactNode }) {
 
       setStudioLoading(true)
       setStudioResult(null)
+
       try {
         const payload =
           connection === 'online'
-            ? await runStudioAction(action, liveIds(documents))
+            ? await runStudioAction(action, selectedIds)
             : previewStudio(action)
 
         setStudioResult({
