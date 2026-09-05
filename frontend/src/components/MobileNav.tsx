@@ -4,7 +4,6 @@ import type { MobilePanel } from '../types'
 const TABS: Array<{ id: MobilePanel; label: string }> = [
   { id: 'sources', label: 'Documents' },
   { id: 'chat', label: 'Chat' },
-  { id: 'studio', label: 'Actions' },
 ]
 
 export function MobileNav() {

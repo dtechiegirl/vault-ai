@@ -23,6 +23,14 @@ def is_history_question(query: str) -> bool:
         "what did i just ask",
         "what was my earlier question",
         "what did i say before",
+
+        # Message/history variations
+        "what was my last message",
+        "what was my previous message",
+       "what was my earlier message",
+        "what did i just say",
+        "what did i say in my last message",
+        "what did i say previously",
     ]
 
     return any(pattern in normalized for pattern in history_patterns)
