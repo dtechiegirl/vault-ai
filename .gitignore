@@ -37,4 +37,9 @@ chroma_db/
 *.sqlite3
 
 data/uploads/*
-!data/uploads/.gitkeep
+!data/uploads/.gitkeep.venv/
+venv/
+.env
+node_modules/
+frontend/.vite/
+__pycache__/

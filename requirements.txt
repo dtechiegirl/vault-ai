@@ -10,4 +10,5 @@ numpy==2.4.6
 pypdf==6.16.2
 
 pytest==9.1.1
-httpx==0.28.1
+httpx==0.28.1python-pptx
+tiktoken
